@@ -24,7 +24,7 @@ jobs:
       - name: Install Haxe
         uses: krdlab/setup-haxe@v1
         with:
-          haxe-version: "4.3.7"
+          haxe-version: "4.1.5"
 
       - name: Set up Haxelib
         run: haxelib setup ~/haxelib
@@ -42,7 +42,7 @@ jobs:
           haxelib install actuate 1.8.7
           haxelib install flixel-ui 2.5.0
           haxelib install newgrounds 1.1.5
-          haxelib install polymod 1.5.2
+          haxelib install polymod 1.4.1
           haxelib git extension-webm https://github.com/KadeDev/extension-webm.git
 
       - name: Build HTML5
