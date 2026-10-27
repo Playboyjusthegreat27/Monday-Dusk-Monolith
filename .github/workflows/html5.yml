@@ -1,0 +1,56 @@
+name: Build HTML5
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "source/**"
+      - "assets/**"
+      - "Project.xml"
+      - ".github/workflows/html5.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  build-html5:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install Haxe
+        uses: krdlab/setup-haxe@v1
+        with:
+          haxe-version: "4.2.5"
+
+      - name: Install Lime and OpenFL
+        run: |
+          haxelib setup ~/haxelib
+          haxelib install lime
+          haxelib install openfl
+
+      - name: Install project libraries
+        run: |
+          haxelib install flixel
+          haxelib install flixel-addons
+          haxelib install hscript
+          haxelib install actuate
+          haxelib install flixel-ui
+          haxelib install newgrounds
+          haxelib install polymod
+          haxelib git extension-webm https://github.com/KadeDev/extension-webm.git
+
+      - name: Build HTML5
+        run: haxelib run lime build html5 -release
+
+      - name: Upload HTML5 build
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Monday-Dusk-Monolith-HTML5
+          path: export/html5/bin/
+          if-no-files-found: warn
+          retention-days: 14
