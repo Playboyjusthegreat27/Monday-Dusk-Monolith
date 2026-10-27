@@ -1,0 +1,51 @@
+name: HTML5 Build
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  build-html5:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Setup Haxe
+        uses: HaxeFoundation/setup-haxe@v2
+        with:
+          haxe-version: 4.3.6
+
+      - name: Install Haxe libraries
+        run: |
+          haxelib --quiet install lime
+          haxelib --quiet install openfl
+          haxelib --quiet install flixel
+          haxelib --quiet install flixel-addons
+          haxelib --quiet install hscript
+          haxelib --quiet install actuate
+          haxelib --quiet install flixel-ui
+          haxelib --quiet install polymod
+          haxelib --quiet install newgrounds
+          haxelib git extension-webm https://github.com/KadeDev/extension-webm.git
+          haxelib --quiet run lime setup
+
+      - name: Build HTML5 target
+        run: |
+          lime build html5 -D html5 -D release
+
+      - name: Upload HTML5 build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: monday-dusk-monolith-html5
+          path: export/release/html5/
